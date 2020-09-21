@@ -1,0 +1,53 @@
+# Copyright (c) 2020-present Sven Greb <development@svengreb.de>
+# This source code is licensed under the MIT license found in the LICENSE file.
+
+# GitHub Action Workflow for continuous integration jobs.
+# See https://docs.github.com/en/actions and https://github.com/features/actions for more details.
+
+name: CI
+on: [push]
+
+jobs:
+  lint-node:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x, 14.x]
+    steps:
+      - name: Print metadata and context information
+        run: |
+          echo "Git SHA: $GITHUB_SHA"
+          echo "Git Ref: $GITHUB_REF"
+          echo "Workflow Actor: $GITHUB_ACTOR"
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: "Setup Node.js version ${{ matrix.node-version }}"
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install Node modules
+        run: yarn --frozen-lockfile
+      - name: Run linters
+        run: yarn lint
+  lint-go:
+    strategy:
+      matrix:
+        # Use the official Go version policy and run for the latest three major version releases.
+        # See https://golang.org/doc/devel/release.html#policy for more details.
+        go-version: [1.13.x, 1.14.x, 1.15.x]
+        os: [macos-latest, ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Print metadata and context information
+        run: |
+          echo "Git SHA: $GITHUB_SHA"
+          echo "Git Ref: $GITHUB_REF"
+          echo "Workflow Actor: $GITHUB_ACTOR"
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: "Run golangci-lint"
+        # The official golangci-lint action created and maintained by the golangci-lint project.
+        # See https://github.com/golangci/golangci-lint-action for more details.
+        uses: golangci/golangci-lint-action@v2
+        with:
+          version: v1.31
