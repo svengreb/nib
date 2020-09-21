@@ -109,7 +109,7 @@ linters-settings:
         YEAR: 2020-present
       regexp:
         EMAIL: .*@svengreb\.de
-    template: |
+    template: |-
       Copyright (c) {{ YEAR }} {{ AUTHOR }} <{{ EMAIL }}>
       This source code is licensed under the MIT license found in the LICENSE file.
 
