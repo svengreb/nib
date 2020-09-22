@@ -44,8 +44,9 @@ var (
 	DefaultWriter = color.Output
 )
 
-// Inkpen is a colorized writer for human-facing CLI messages with support for custom prefixes and verbosity level
-// icons.
+// Inkpen is a colorized writer for human-facing CLI messages with support for colored output, automatic TTY detection,
+// custom prefixes and configurable verbosity level icons.
+// To disable log level icons the WithIcon field can be set to false.
 type Inkpen struct {
 	WithIcon bool
 
@@ -62,6 +63,7 @@ type Icon struct {
 }
 
 // NewDefault creates and returns a new inkpen with default configurations.
+// The log level is nib.InfoVerbosity that prints messages with nib.VerbosityNameInfo scope.
 func NewDefault() *Inkpen {
 	return &Inkpen{
 		WithIcon:  true,
@@ -104,6 +106,10 @@ func (i *Inkpen) Infof(msg string, args ...interface{}) {
 }
 
 // SetIcons sets the inkpen verbosity level icons.
+// Note that the provided map gets merged with the default map in order to ensure there are no missing icons.
+// The default icon map also uses Unicode characters which are supported by almost all terminals nowadays,
+// but there might be cases where simple ASCII characters work better instead.
+// To customize the color of an icon the Icon.ColorFunc field can be adjusted too.
 func (i *Inkpen) SetIcons(icons map[nib.Verbosity]Icon) {
 	i.WithIcon = true
 	for k, v := range icons {
@@ -112,6 +118,7 @@ func (i *Inkpen) SetIcons(icons map[nib.Verbosity]Icon) {
 }
 
 // SetPrefixes sets the inkpen message prefixes.
+// By default only the log level icons are printed as prefix before the given message format and arguments.
 func (i *Inkpen) SetPrefixes(p ...string) {
 	i.prefixes = p
 }
