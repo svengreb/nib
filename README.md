@@ -8,8 +8,6 @@
 
 <p align="center">A “stylish“, log-level based line printer for human-facing <a href="https://go.dev" target="_blank">Go</a> CLI applications.</p>
 
-_nib_ is a log-level based line printer for human-facing Go CLI applications.
-
 ## Features
 
 The [`inkpen` package][go-pkg-svengreb/nib/inkpen] provides [`inkpen.Inkpen`][go-pkg-type-svengreb/nib/inkpen#inkpen] that implements [`nib.Nib`][go-pkg-type-svengreb/nib#nib] with…
