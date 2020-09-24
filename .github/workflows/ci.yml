@@ -10,9 +10,6 @@ on: [push]
 jobs:
   lint-node:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [12.x, 14.x]
     steps:
       - name: Print metadata and context information
         run: |
@@ -24,19 +21,13 @@ jobs:
       - name: "Setup Node.js version ${{ matrix.node-version }}"
         uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: "14.x"
       - name: Install Node modules
         run: yarn --frozen-lockfile
       - name: Run linters
         run: yarn lint
   lint-go:
-    strategy:
-      matrix:
-        # Use the official Go version policy and run for the latest three major version releases.
-        # See https://golang.org/doc/devel/release.html#policy for more details.
-        go-version: [1.13.x, 1.14.x, 1.15.x]
-        os: [macos-latest, ubuntu-latest, windows-latest]
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     steps:
       - name: Print metadata and context information
         run: |
@@ -45,6 +36,10 @@ jobs:
           echo "Workflow Actor: $GITHUB_ACTOR"
       - name: Checkout repository
         uses: actions/checkout@v2
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: "1.15.x"
       - name: "Run golangci-lint"
         # The official golangci-lint action created and maintained by the golangci-lint project.
         # See https://github.com/golangci/golangci-lint-action for more details.
@@ -54,10 +49,8 @@ jobs:
   test:
     strategy:
       matrix:
-        # Use the official Go version policy and run for the latest three major version releases.
-        # See https://golang.org/doc/devel/release.html#policy for more details.
-        go-version: [1.13.x, 1.14.x, 1.15.x]
-        os: [macos-latest, ubuntu-latest, windows-latest]
+        go-version: ["1.15.x"]
+        os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     needs:
       - lint-go
