@@ -4,8 +4,14 @@
 # GitHub Action Workflow for continuous integration jobs.
 # See https://docs.github.com/en/actions and https://github.com/features/actions for more details.
 
-name: CI
-on: [push]
+name: ci
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - v*
+  pull_request:
 
 jobs:
   lint-node:
