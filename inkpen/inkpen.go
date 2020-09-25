@@ -10,6 +10,7 @@ import (
 	"io"
 	"os"
 	"strings"
+	"unicode"
 
 	"github.com/fatih/color"
 
@@ -73,7 +74,7 @@ func NewDefault() *Inkpen {
 	}
 }
 
-// New creates and returns a new inkpen.
+// New creates a new inkpen with the given nib.Verbosity and output writer.
 func New(v nib.Verbosity, w io.Writer) *Inkpen {
 	return &Inkpen{
 		icons:     make(map[nib.Verbosity]Icon),
@@ -107,13 +108,22 @@ func (i *Inkpen) Infof(msg string, args ...interface{}) {
 
 // SetIcons sets the inkpen verbosity level icons.
 // Note that the provided map gets merged with the default map in order to ensure there are no missing icons.
-// The default icon map also uses Unicode characters which are supported by almost all terminals nowadays,
+// The default icon map uses Unicode characters which are supported by almost all terminals nowadays,
 // but there might be cases where simple ASCII characters work better instead.
 // To customize the color of an icon the Icon.ColorFunc field can be adjusted too.
 func (i *Inkpen) SetIcons(icons map[nib.Verbosity]Icon) {
-	i.WithIcon = true
-	for k, v := range icons {
-		i.icons[k] = v
+	for verb, icon := range icons {
+		var v Icon
+		if unicode.IsPrint(icon.Value) {
+			v = i.icons[verb]
+			v.Value = icon.Value
+			i.icons[verb] = v
+		}
+		if icon.ColorFunc != nil {
+			v = i.icons[verb]
+			v.ColorFunc = icon.ColorFunc
+		}
+		i.icons[verb] = v
 	}
 }
 
