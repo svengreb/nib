@@ -71,7 +71,7 @@ func main() {
 
 ## Configuration
 
-Both types [`pencil.Pencil` type][go-pkg-type-svengreb/nib/pencil#pencil] [`inkpen.Inkpen` type][go-pkg-type-svengreb/nib/inkpen#inkpen] were designed so that they can be flexibly adapted to different use cases and environments.
+Both types [`pencil.Pencil`][go-pkg-type-svengreb/nib/pencil#pencil] and [`inkpen.Inkpen`][go-pkg-type-svengreb/nib/inkpen#inkpen] were designed so that they can be flexibly adapted to different use cases and environments.
 
 To customize a `pencil.Pencil` the [`New` function][go-pkg-func-svengreb/nib/pencil#new] accepts one or more [`pencil.Option`][go-pkg-type-svengreb/nib/pencil#option].
 A `inkpen.Inkpen` can also be customized with one or more `pencil.Option` by passing them to the [`inkpen.WithPencilOptions(pencilOpts ...pencil.Option) Option` function][go-pkg-met-svengreb/nib/inkpen#eithpenciloptions] via the [`New` function][go-pkg-func-svengreb/nib/inkpen#new].
@@ -79,7 +79,7 @@ A `inkpen.Inkpen` can also be customized with one or more `pencil.Option` by pas
 ### Verbosity
 
 The default verbosity level of `pencil.Pencil` is [`nib.InfoVerbosity`][go-pkg-var-svengreb/nib#infoverbosity] that prints messages with “info“ scope.
-You can adjust it to any other level through the [`pencil.WithVerbosity(verbosity nib.Verbosity) Option`][go-pkg-met-svengreb/nib/pencil#withverbosity] function:
+You can adjust it to any other level through the [`pencil.WithVerbosity(v nib.Verbosity) Option`][go-pkg-met-svengreb/nib/pencil#withverbosity] function:
 
 <!--lint disable no-tabs-->
 
