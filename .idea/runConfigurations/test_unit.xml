@@ -1,0 +1,13 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="test-unit" type="GoTestRunConfiguration" factoryName="Go Test" singleton="false">
+    <module name="nib" />
+    <working_directory value="$PROJECT_DIR$" />
+    <go_parameters value="-i -race -v" />
+    <framework value="gotest" />
+    <kind value="DIRECTORY" />
+    <package value="github.com/svengreb/nib" />
+    <directory value="$PROJECT_DIR$" />
+    <filePath value="$PROJECT_DIR$" />
+    <method v="2" />
+  </configuration>
+</component>
