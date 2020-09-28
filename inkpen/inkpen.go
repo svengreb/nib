@@ -1,86 +1,41 @@
 // Copyright (c) 2020-present Sven Greb <development@svengreb.de>
 // This source code is licensed under the MIT license found in the LICENSE file.
 
-// Package inkpen implements nib.Nib to provide a colorized writer for human-facing CLI messages with support for custom
-// prefixes and verbosity level icons.
+// Package inkpen composes pencil.Pencil to support colored output including automatic TTY and terminal color detection.
 package inkpen
 
 import (
 	"fmt"
-	"io"
 	"os"
 	"strings"
-	"unicode"
-
-	"github.com/fatih/color"
+	"unicode/utf8"
 
 	"github.com/svengreb/nib"
+	"github.com/svengreb/nib/pencil"
 )
 
-// The default inkpen color functions.
-var (
-	DefaultDebugColorFunc   = color.New(color.FgMagenta).Sprintf
-	DefaultErrorColorFunc   = color.New(color.FgRed).Sprintf
-	DefaultFatalColorFunc   = color.New(color.FgRed, color.Bold).Sprintf
-	DefaultInfoColorFunc    = color.New(color.FgBlue).Sprintf
-	DefaultSuccessColorFunc = color.New(color.FgGreen).Sprintf
-	DefaultWarnColorFunc    = color.New(color.FgYellow).Sprintf
-)
-
-// Default inkpen verbosity level icons.
-var (
-	DefaultDebugIcon   = '⦿'
-	DefaultErrorIcon   = '✕'
-	DefaultFatalIcon   = '⭍'
-	DefaultInfoIcon    = '➜'
-	DefaultSuccessIcon = '✓'
-	DefaultWarnIcon    = '!'
-)
-
-var (
-	// DefaultVerbosity is the default inkpen verbosity level.
-	DefaultVerbosity = nib.InfoVerbosity
-	// DefaultWriter is the default inkpen writer.
-	// It automatically detects TTY and terminal color support.
-	DefaultWriter = color.Output
-)
-
-// Inkpen is a colorized writer for human-facing CLI messages with support for colored output, automatic TTY detection,
-// custom prefixes and configurable verbosity level icons.
-// To disable log level icons the WithIcon field can be set to false.
+// Inkpen composes pencil.Pencil to support colored output including automatic TTY and terminal color detection.
 type Inkpen struct {
-	WithIcon bool
-
-	icons     map[nib.Verbosity]Icon
-	prefixes  []string
-	verbosity nib.Verbosity
-	writer    io.Writer
+	*pencil.Pencil
+	opts Options
 }
 
-// Icon is a verbosity level icon.
-type Icon struct {
-	ColorFunc func(format string, args ...interface{}) string
-	Value     rune
-}
-
-// NewDefault creates and returns a new inkpen with default configurations.
-// The log level is nib.InfoVerbosity that prints messages with nib.VerbosityNameInfo scope.
-func NewDefault() *Inkpen {
+// New creates and returns a new inkpen with default Options and pencil.Options.
+func New(opts ...Option) *Inkpen {
+	opt := NewOptions(opts...)
+	p := pencil.NewFrom(opt.pencilOpts)
 	return &Inkpen{
-		WithIcon:  true,
-		icons:     getDefaultIcons(),
-		verbosity: DefaultVerbosity,
-		writer:    DefaultWriter,
+		Pencil: p,
+		opts:   opt,
 	}
 }
 
-// New creates a new inkpen with the given nib.Verbosity and output writer.
-func New(v nib.Verbosity, w io.Writer) *Inkpen {
-	return &Inkpen{
-		icons:     make(map[nib.Verbosity]Icon),
-		verbosity: v,
-		writer:    w,
+// Compile compiles the format and arguments, ensuring a trailing newline, when the given verbosity level is enabled.
+func (i *Inkpen) Compile(v nib.Verbosity, format string, args ...interface{}) string {
+	if i.Enabled(v) {
+		return i.formatMsg(v, format, args...)
 	}
+	return ""
 }
 
 // Debugf writes a debug message and ensures a trailing newline for the given format.
@@ -89,7 +44,7 @@ func (i *Inkpen) Debugf(msg string, args ...interface{}) {
 }
 
 // Enabled checks if the verbosity is greater than the given verbosity.
-func (i *Inkpen) Enabled(v nib.Verbosity) bool { return i.verbosity >= v }
+func (i *Inkpen) Enabled(v nib.Verbosity) bool { return i.Pencil.GetVerbosity() >= v }
 
 // Errorf writes a error message and ensures a trailing newline for the given format.
 func (i *Inkpen) Errorf(msg string, args ...interface{}) {
@@ -106,38 +61,6 @@ func (i *Inkpen) Infof(msg string, args ...interface{}) {
 	i.writef(nib.InfoVerbosity, msg, args...)
 }
 
-// SetIcons sets the inkpen verbosity level icons.
-// Note that the provided map gets merged with the default map in order to ensure there are no missing icons.
-// The default icon map uses Unicode characters which are supported by almost all terminals nowadays,
-// but there might be cases where simple ASCII characters work better instead.
-// To customize the color of an icon the Icon.ColorFunc field can be adjusted too.
-func (i *Inkpen) SetIcons(icons map[nib.Verbosity]Icon) {
-	for verb, icon := range icons {
-		var v Icon
-		if unicode.IsPrint(icon.Value) {
-			v = i.icons[verb]
-			v.Value = icon.Value
-			i.icons[verb] = v
-		}
-		if icon.ColorFunc != nil {
-			v = i.icons[verb]
-			v.ColorFunc = icon.ColorFunc
-		}
-		i.icons[verb] = v
-	}
-}
-
-// SetPrefixes sets the inkpen message prefixes.
-// By default only the log level icons are printed as prefix before the given message format and arguments.
-func (i *Inkpen) SetPrefixes(p ...string) {
-	i.prefixes = p
-}
-
-// SetVerbosity sets the inkpen verbosity level.
-func (i *Inkpen) SetVerbosity(v nib.Verbosity) {
-	i.verbosity = v
-}
-
 // Successf writes a success message and ensures a trailing newline for the given format.
 func (i *Inkpen) Successf(msg string, args ...interface{}) {
 	i.writef(nib.SuccessVerbosity, msg, args...)
@@ -148,53 +71,28 @@ func (i *Inkpen) Warnf(msg string, args ...interface{}) {
 	i.writef(nib.WarnVerbosity, msg, args...)
 }
 
-// getDefaultIcons returns a map with default verbosity level icons.
-func getDefaultIcons() map[nib.Verbosity]Icon {
-	return map[nib.Verbosity]Icon{
-		nib.DebugVerbosity: {
-			ColorFunc: DefaultDebugColorFunc,
-			Value:     DefaultDebugIcon,
-		},
-		nib.ErrorVerbosity: {
-			ColorFunc: DefaultErrorColorFunc,
-			Value:     DefaultErrorIcon,
-		},
-		nib.FatalVerbosity: {
-			ColorFunc: DefaultFatalColorFunc,
-			Value:     DefaultFatalIcon,
-		},
-		nib.InfoVerbosity: {
-			ColorFunc: DefaultInfoColorFunc,
-			Value:     DefaultInfoIcon,
-		},
-		nib.SuccessVerbosity: {
-			ColorFunc: DefaultSuccessColorFunc,
-			Value:     DefaultSuccessIcon,
-		},
-		nib.WarnVerbosity: {
-			ColorFunc: DefaultWarnColorFunc,
-			Value:     DefaultWarnIcon,
-		},
+// formatMsg formats the message and ensures a trailing newline for the given format.
+func (i *Inkpen) formatMsg(v nib.Verbosity, format string, args ...interface{}) string {
+	msg := i.Pencil.Compile(v, format, args...)
+
+	if msg != "" && i.Pencil.IconsEnabled() && i.opts.coloredIcons {
+		icf := i.opts.iconColorFuncs[v]
+		icon, _ := utf8.DecodeRuneInString(msg)
+		if icon != utf8.RuneError {
+			msg = strings.Replace(msg, string(icon), icf(string(icon)), 1)
+		}
 	}
+
+	return msg
 }
 
 // writef writes to the underlying writer and ensures a trailing newline for the given format.
 func (i *Inkpen) writef(v nib.Verbosity, format string, args ...interface{}) {
 	if i.Enabled(v) {
-		if len(args) > 0 || !strings.HasSuffix(format, "\n") {
-			format += "\n"
-		}
+		msg := i.formatMsg(v, format, args...)
 
-		msg := append(i.prefixes, format)
-		if i.WithIcon {
-			icon, hasIcon := i.icons[v]
-			if hasIcon {
-				msg = append([]string{icon.ColorFunc(string(icon.Value))}, msg...)
-			}
-		}
-
-		if _, err := fmt.Fprintf(i.writer, strings.Join(msg, " "), args...); err != nil {
-			_, _ = fmt.Fprintf(os.Stderr, strings.Join(msg, " "), args...)
+		if _, err := fmt.Fprint(i.opts.pencilOpts.Writer, msg); err != nil {
+			_, _ = fmt.Fprint(os.Stderr, msg)
 		}
 	}
 }
