@@ -5,6 +5,8 @@
 // This package represents the currently latest API v0.
 package nib
 
+import "io"
+
 // Nib is a log-level based line printer for human-facing messages.
 type Nib interface {
 	// Compile compiles a message for the verbosity level using the given format and arguments.
@@ -21,4 +23,6 @@ type Nib interface {
 	Successf(format string, args ...interface{})
 	// Warnf writes a message with nib.WarnVerbosity level for the given format and arguments.
 	Warnf(format string, args ...interface{})
+	// Writer returns the underlying io.Writer.
+	Writer() io.Writer
 }

@@ -86,13 +86,17 @@ func (i *Inkpen) formatMsg(v nib.Verbosity, format string, args ...interface{}) 
 	return msg
 }
 
-// writef writes to the underlying writer and ensures a trailing newline for the given format.
+// writef writes to the underlying writer.
+// If an error occurs while writing to the underlying io.Writer the message is printed to os.Stdout instead.
+// When this also returns an error the error is written to os.Stderr instead.
 func (i *Inkpen) writef(v nib.Verbosity, format string, args ...interface{}) {
 	if i.Enabled(v) {
 		msg := i.formatMsg(v, format, args...)
 
-		if _, err := fmt.Fprint(i.opts.pencilOpts.Writer, msg); err != nil {
-			_, _ = fmt.Fprint(os.Stderr, msg)
+		if _, err := fmt.Fprint(i.Pencil.Writer(), msg); err != nil {
+			if _, err = fmt.Fprint(os.Stdout, msg); err != nil {
+				_, _ = fmt.Fprint(os.Stderr, err)
+			}
 		}
 	}
 }
