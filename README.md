@@ -34,6 +34,7 @@ The [`nib.Nib` interface][go-pkg-type-svengreb/nib#nib] consists of six function
 - `Infof(format string, args ...interface{})` — writes a message with `info` verbosity level for the given format and arguments.
 - `Successf(format string, args ...interface{})` — writes a message with `success` verbosity level for the given format and arguments.
 - `Warnf(format string, args ...interface{})` — writes a message with `warn` verbosity level for the given format and arguments.
+- `Writer() io.Writer` — returns the underlying [`io.Writer`][go-doc-type-io#writer].
 
 The [`pencil` package][go-pkg-svengreb/nib/pencil] implements this interface including [features like custom prefixes and verbosity level icons](#features).
 The [`inkpen` package][go-pkg-svengreb/nib/inkpen] composes [`pencil.Pencil`][go-pkg-type-svengreb/nib/pencil#pencil] and additionally [comes with additional features like colored output including automatic TTY and cross-platform terminal color support detection](#features).
@@ -276,6 +277,8 @@ func main() {
 }
 ```
 
+<!--lint enable no-tabs-->
+
 ### Prefixes
 
 By default only the verbosity level icons are printed as prefix before the given message format and arguments.
@@ -302,6 +305,8 @@ func main() {
 }
 ```
 
+<!--lint enable no-tabs-->
+
 ### Writer
 
 By default `pencil.Pencil` uses [`os.Stderr`][go-doc-os#pkg_vars] while `inkpen.Inkpen` uses `color.Output` which in turn is a exported variable that makes use of [github.com/mattn/go-colorable][mattn/go-colorable], a package for colored TTY output on multiple platforms.
@@ -327,6 +332,38 @@ func main() {
 
 	pen.Errorf("Blueberries mixed with raspberries and yoghurt are a delicious dream")
 	ink.Errorf("Blueberries mixed with raspberries and yoghurt are a delicious dream")
+}
+```
+
+<!--lint enable no-tabs-->
+
+<!--lint ignore no-duplicate-headings-->
+
+## Writer
+
+Both types [`pencil.Pencil`][go-pkg-type-svengreb/nib/pencil#pencil] and [`inkpen.Inkpen`][go-pkg-type-svengreb/nib/inkpen#inkpen] use recommended [`io.Writer`][go-doc-type-io#writer] by default to provide optimal compatibility for their specific features like colored output.
+To allow to either reuse the default or configured `io.Writer` the `Writer() io.Writer` method of the `nib.Nib` API interface can be used:
+
+<!--lint disable no-tabs-->
+
+```go
+package main
+
+import (
+	"os"
+
+	"github.com/svengreb/nib/inkpen"
+	"github.com/svengreb/nib/pencil"
+)
+
+func main() {
+	// Create a new pencil...
+	pen := pencil.New(pencil.WithWriter(os.Stderr))
+	// ... or inkpen.
+	ink := inkpen.New()
+
+	_, _ = fmt.Fprintln(pen.Writer(), "Brazil nuts are also a delicious and healthy snack between meals")
+	_, _ = fmt.Fprintln(ink.Writer(), "Brazil nuts are also a delicious and healthy snack between meals")
 }
 ```
 

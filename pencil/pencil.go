@@ -7,6 +7,7 @@ package pencil
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"strings"
 	"unicode"
@@ -76,6 +77,11 @@ func (p *Pencil) Warnf(format string, args ...interface{}) {
 	p.writef(nib.WarnVerbosity, format, args...)
 }
 
+// Writer returns the underlying io.Writer.
+func (p *Pencil) Writer() io.Writer {
+	return p.opts.Writer
+}
+
 // formatMsg formats the message and ensures a trailing newline for the given format.
 func (p *Pencil) formatMsg(v nib.Verbosity, format string, args ...interface{}) string {
 	if len(args) > 0 || !strings.HasSuffix(format, "\n") {
@@ -94,11 +100,15 @@ func (p *Pencil) formatMsg(v nib.Verbosity, format string, args ...interface{}) 
 }
 
 // writef writes to the underlying writer.
+// If an error occurs while writing to the underlying io.Writer the message is printed to os.Stdout instead.
+// When this also returns an error the error is written to os.Stderr instead.
 func (p *Pencil) writef(v nib.Verbosity, format string, args ...interface{}) {
 	if p.Enabled(v) {
 		msg := p.formatMsg(v, format, args...)
 		if _, err := fmt.Fprint(p.opts.Writer, msg); err != nil {
-			_, _ = fmt.Fprint(os.Stderr, msg)
+			if _, err = fmt.Fprint(os.Stdout, msg); err != nil {
+				_, _ = fmt.Fprint(os.Stderr, err)
+			}
 		}
 	}
 }
