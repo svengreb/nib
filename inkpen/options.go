@@ -31,7 +31,7 @@ type IconColorFunc func(format string, args ...interface{}) string
 type Options struct {
 	coloredIcons   bool
 	iconColorFuncs map[nib.Verbosity]IconColorFunc
-	pencilOpts     pencil.Options
+	pencilOpts     []pencil.Option
 }
 
 // Option is a inkpen option.
@@ -39,14 +39,16 @@ type Option func(*Options)
 
 // NewOptions creates new default inkpen Options and pencil.Options and merges them with the given list of Option.
 // By default the output writer is DefaultWriter and colorization for verbosity level icons is enabled.
-func NewOptions(opts ...Option) Options {
-	opt := Options{
+func NewOptions(opts ...Option) *Options {
+	opt := &Options{
 		iconColorFuncs: getDefaultIconColorFuncs(),
 		coloredIcons:   true,
-		pencilOpts:     pencil.NewOptions(pencil.WithWriter(DefaultWriter)),
+		pencilOpts: []pencil.Option{
+			pencil.WithWriter(DefaultWriter),
+		},
 	}
 	for _, o := range opts {
-		o(&opt)
+		o(opt)
 	}
 	return opt
 }
@@ -70,13 +72,9 @@ func WithIconColorFuncs(iconColorFuncs map[nib.Verbosity]IconColorFunc) Option {
 }
 
 // WithPencilOptions sets the given list of pencil.Option.
-func WithPencilOptions(pencilOpts ...pencil.Option) Option {
+func WithPencilOptions(opts ...pencil.Option) Option {
 	return func(o *Options) {
-		pOpts := o.pencilOpts
-		for _, po := range pencilOpts {
-			po(&pOpts)
-		}
-		o.pencilOpts = pOpts
+		o.pencilOpts = append(o.pencilOpts, opts...)
 	}
 }
 

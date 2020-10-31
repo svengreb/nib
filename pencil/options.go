@@ -42,8 +42,8 @@ type Option func(*Options)
 
 // NewOptions creates new default Options and merges them with the given options.
 // By default the verbosity level is DefaultVerbosity and icons are enabled with output to DefaultWriter.
-func NewOptions(opts ...Option) Options {
-	opt := Options{
+func NewOptions(opts ...Option) *Options {
+	opt := &Options{
 		Icons:     GetDefaultIcons(),
 		Prefixes:  []string{},
 		UseIcons:  true,
@@ -51,7 +51,7 @@ func NewOptions(opts ...Option) Options {
 		Writer:    DefaultWriter,
 	}
 	for _, o := range opts {
-		o(&opt)
+		o(opt)
 	}
 	return opt
 }
