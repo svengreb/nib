@@ -17,13 +17,13 @@ import (
 // Inkpen composes pencil.Pencil to support colored output including automatic TTY and terminal color detection.
 type Inkpen struct {
 	*pencil.Pencil
-	opts Options
+	opts *Options
 }
 
 // New creates and returns a new inkpen with default Options and pencil.Options.
 func New(opts ...Option) *Inkpen {
 	opt := NewOptions(opts...)
-	p := pencil.NewFrom(opt.pencilOpts)
+	p := pencil.New(opt.pencilOpts...)
 	return &Inkpen{
 		Pencil: p,
 		opts:   opt,

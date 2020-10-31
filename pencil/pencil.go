@@ -17,14 +17,11 @@ import (
 
 // Pencil is a writer for human-facing CLI messages with support for custom prefixes and verbosity level icons.
 type Pencil struct {
-	opts Options
+	opts *Options
 }
 
 // New creates new pencil with default Options and merges them with the given list of Option.
 func New(opts ...Option) *Pencil { return &Pencil{opts: NewOptions(opts...)} }
-
-// NewFrom creates new pencil from the given Options.
-func NewFrom(opts Options) *Pencil { return &Pencil{opts: opts} }
 
 // Compile compiles the format and arguments, ensuring a trailing newline, when the given verbosity level is enabled.
 func (p *Pencil) Compile(v nib.Verbosity, format string, args ...interface{}) string {
