@@ -32,6 +32,7 @@ linters:
     - dogsled
     - dupl
     - errcheck
+    - errorlint
     - exhaustive
     - gochecknoinits
     - goconst
@@ -59,12 +60,14 @@ linters:
     - staticcheck
     - structcheck
     - stylecheck
+    - tparallel
     - typecheck
     - unconvert
     - unparam
     - unused
     - varcheck
     - whitespace
+    - wrapcheck
   # Run all linters, not only fast ones.
   fast: false
 
@@ -136,12 +139,12 @@ linters-settings:
   misspell:
     locale: US
     ignore-words:
-      - tmpl
-      - tmpl-go
+      - inkpen
+      - nib
 
 # Options for analysis runs.
 run:
   deadline: 15m
 
 service:
-  golangci-lint-version: 1.31.x
+  golangci-lint-version: 1.32.x
