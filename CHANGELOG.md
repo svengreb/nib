@@ -6,6 +6,60 @@
 
 <!--lint disable no-duplicate-headings no-duplicate-headings-in-section-->
 
+# 0.2.0
+
+![Release Date: 2020-11-11](https://img.shields.io/static/v1?style=flat-square&label=Release%20Date&message=2020-11-11&colorA=4c566a&colorB=88c0d0) [![Project Board](https://img.shields.io/static/v1?style=flat-square&label=Project%20Board&message=0.2.0&logo=github&logoColor=eceff4&colorA=4c566a&colorB=88c0d0)](https://github.com/svengreb/nib/projects/5) [![Milestone](https://img.shields.io/static/v1?style=flat-square&label=Milestone&message=0.2.0&logo=github&logoColor=eceff4&colorA=4c566a&colorB=88c0d0)](https://github.com/svengreb/nib/milestone/2)
+
+⇅ [Show all commits][gh-compare-tag-v0.1.0_v0.2.0]
+
+## Features
+
+<details>
+<summary><strong>Extend nib API to allow reuse of underlying writer</strong> — #21 ⇄ #22 (⊶ 2dac3395)</summary>
+
+↠ To allow to reuse the underlying [io.Writer][go-doc-pkg-type-io#writer] the new `Writer() io.Writer` method has been added to the [`nib.Nib` interface][go-pkg-if-svengreb/nib#nib].
+Both implementations the [`pencil`][go-pkg-svengreb/nib/pencil] and [`inkpen`][go-pkg-svengreb/nib/inkpen] package have been adapted to this change.
+
+</details>
+
+<details>
+<summary><strong>Update to <code>tmpl-go</code> template repository version 0.5.0</strong> — #25 ⇄ #26 (⊶ 15285fb1)</summary>
+
+↠ Updated to [`tmpl-go` version 0.5.0][gh-tmpl-go-rel-v0.5.0] (including [version 0.4.0][gh-tmpl-go-rel-v0.4.0]) that…
+
+1. …[introduces the initial project documentation][svengreb/tmpl-go#32].
+2. …[updates golangci-lint to the currently latest version 1.32.0][svengreb/tmpl-go#21] which introduces new linters like [errorlint][]., [tparallel][]. and [wrapcheck][].
+3. …updates to `tmpl` version 0.7.0 ([#25][svengreb/tmpl-go#25] [#34][svengreb/tmpl-go#34]).
+   This includes…
+   - …a new configuration file for [automated dependency updates and security alerts][svengreb/tmpl#52] with [Dependabot][]. Next to update configurations for the [CI/CD GitHub action workflow][tmpl#cicd] and [Yarn/NPM dependencies][tmpl#node], the file has been extended to support [Go modules][go-doc-mod].
+   - …updates to the latest Node.js package dependency & GitHub Action versions.
+   - …a [change of the NPM package name to use a namespace][svengreb/tmpl#48] which helps to prevent collisions with already existing NPM packages like [tmpl][npm-tmpl].
+
+</details>
+
+## Improvement
+
+<details>
+<summary><strong>Removed <code>pencil.NewFrom(*pencil.Options)</code> function</strong> — #23 ⇄ #24 (⊶ 175478ec)</summary>
+
+↠ The [`pencil.NewFrom(*pencil.Options)`][gh-blob-pencil-2dac3395#l26-27] function was not necessary because…
+
+1. …there is currently no way to get the actual options from a `pencil` instance.
+2. …new `pencil` instances with different options can be simply composed by using the variadic parameter of the `pencil.New(pencil.Option...)` function.
+
+Therefore the `pencil.NewFrom(*pencil.Options)` has been removed to simply the package surface.
+
+</details>
+
+<details>
+<summary><strong>Updated to latest Go module dependency versions</strong> — #28</summary>
+
+↠ Bumped outdated Go module dependencies to their latest versions:
+
+- #28 (⊶ 76653193) [`github.com/fatih/color`][github.com/fatih/color] from [1.9.0 to 1.10.0][gh-fatih/color-v1.9.0_v1.10.0] — upgrades the `github.com/mattn/go-colorable` and `github.com/mattn/go-isatty` dependencies which include various bug fixes and improvements.
+
+</details>
+
 # 0.1.0
 
 ![Release Date: 2020-09-28](https://img.shields.io/static/v1?style=flat-square&label=Release%20Date&message=2020-09-28&colorA=4c566a&colorB=88c0d0) [![Project Board](https://img.shields.io/static/v1?style=flat-square&label=Project%20Board&message=0.1.0&logo=github&logoColor=eceff4&colorA=4c566a&colorB=88c0d0)](https://github.com/svengreb/nib/projects/4) [![Milestone](https://img.shields.io/static/v1?style=flat-square&label=Milestone&message=0.1.0&logo=github&logoColor=eceff4&colorA=4c566a&colorB=88c0d0)](https://github.com/svengreb/nib/milestone/1)
@@ -42,7 +96,7 @@ Additionally specific assets like the repository hero image have been replaced a
 
 ↠ Implemented a new package `inkpen` that implements the `nib.Nib` API `v0` (designed in #5) with color support, custom prefixes and verbosity level icons for human-facing CLI messages.
 
-The default IO output stream is configurable by accepting a [io.Writer][godoc-io#writer]. The default writer is [color.Output][gh-blob-fatih/color#output] of the [github.com/fatih/color][gh-fatih/color] which provides automatic TTY and terminal color support detection.
+The default IO output stream is configurable by accepting a [io.Writer][go-doc-pkg-type-io#writer]. The default writer is [color.Output][gh-blob-fatih/color#output] of the [github.com/fatih/color][gh-fatih/color] which provides automatic TTY and terminal color support detection.
 
 The following [verbosity levels][repo-blob-verbosity-40039091] have been implemented with default icons:
 
@@ -143,6 +197,9 @@ otherwise Markdown elements are not parsed and rendered!
 
 <!-- Base Links -->
 
+[go-pkg-svengreb/nib/pencil]: https://pkg.go.dev/github.com/svengreb/nib/pencil
+[go-doc-pkg-type-io#writer]: https://golang.org/pkg/io/#Writer
+
 <!-- v0.1.0 -->
 
 [gh-blob-fatih/color#output]: https://github.com/fatih/color/blob/fccafd9e876be44d0d7b380a3b03aeb661c1e231/color.go#L25
@@ -154,11 +211,9 @@ otherwise Markdown elements are not parsed and rendered!
 [go-doc-rln-1.15]: https://golang.org/doc/go1.15
 [go-header]: https://github.com/denis-tingajkin/go-header
 [go-pkg-met-svengreb/nib/inkpen#setprefixes]: https://pkg.go.dev/github.com/svengreb/nib/inkpen#Inkpen.SetPrefixes
-[go-pkg-svengreb/nib/pencil]: https://pkg.go.dev/github.com/svengreb/nib/pencil
 [go-pkg-type-svengreb/nib/inkpen#inkpen]: https://pkg.go.dev/github.com/svengreb/nib/inkpen#Inkpen
 [go-pkg-type-svengreb/nib/pencil#pencil]: https://pkg.go.dev/github.com/svengreb/nib/pencil#Pencil
 [go-pkg-type-svengreb/nib#verbosity]: https://pkg.go.dev/github.com/svengreb/nib#Verbosity
-[godoc-io#writer]: https://golang.org/pkg/io/#Writer
 [nodejs/node-cl-v14]: https://github.com/nodejs/node/blob/master/doc/changelogs/CHANGELOG_V14.md
 [repo-blob-inkpen-default_icons-f5cb3546]: https://github.com/svengreb/nib/blob/f5cb3546efb0efa6fa25ded6dec96fcbf83e9857/inkpen/inkpen.go#L29-L37
 [repo-blob-verbosity-40039091]: https://github.com/svengreb/nib/blob/400390915ca497add7c43aa1ff232a08c8501081/verbosity.go
@@ -167,3 +222,28 @@ otherwise Markdown elements are not parsed and rendered!
 [svengreb/tmpl-go#11]: https://github.com/svengreb/tmpl-go/pull/11
 [svengreb/tmpl-go#18]: https://github.com/svengreb/tmpl-go/issues/18
 [svengreb/tmpl-go#7]: https://github.com/svengreb/tmpl-go/pull/7
+
+<!-- v0.2.0 -->
+
+[dependabot]: https://dependabot.com
+[errorlint]: https://github.com/polyfloyd/go-errorlint
+[gh-blob-pencil-2dac3395#l26-27]: https://github.com/svengreb/nib/blob/2dac3395/pencil/pencil.go#L26-L27
+[gh-compare-tag-v0.1.0_v0.2.0]: https://github.com/svengreb/nib/compare/v0.1.0...v0.2.0
+[gh-fatih/color-v1.9.0_v1.10.0]: https://github.com/fatih/color/compare/v1.9.0...v1.10.0
+[gh-tmpl-go-rel-v0.4.0]: https://github.com/svengreb/tmpl-go/releases/tag/v0.4.0
+[gh-tmpl-go-rel-v0.5.0]: https://github.com/svengreb/tmpl-go/releases/tag/v0.5.0
+[github.com/fatih/color]: https://github.com/fatih/color
+[go-doc-mod]: https://golang.org/ref/mod
+[go-pkg-if-svengreb/nib#nib]: https://pkg.go.dev/github.com/svengreb/nib#Nib
+[go-pkg-svengreb/nib/inkpen]: https://pkg.go.dev/github.com/svengreb/nib/inkpen
+[npm-tmpl]: https://www.npmjs.com/package/tmpl
+[svengreb/tmpl-go#21]: https://github.com/svengreb/tmpl-go/pull/21
+[svengreb/tmpl-go#25]: https://github.com/svengreb/tmpl-go/issues/25
+[svengreb/tmpl-go#32]: https://github.com/svengreb/tmpl-go/pull/32
+[svengreb/tmpl-go#34]: https://github.com/svengreb/tmpl-go/issues/34
+[svengreb/tmpl#48]: https://github.com/svengreb/tmpl/issues/48
+[svengreb/tmpl#52]: https://github.com/svengreb/tmpl/issues/52
+[tmpl#cicd]: https://github.com/svengreb/tmpl#cicd-action-workflow
+[tmpl#node]: https://github.com/svengreb/tmpl#nodejs-yarn-and-npm
+[tparallel]: https://github.com/moricho/tparallel
+[wrapcheck]: https://github.com/tomarrell/wrapcheck

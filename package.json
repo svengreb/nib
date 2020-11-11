@@ -1,6 +1,6 @@
 {
   "name": "@svengreb/nib",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A stylish, log-level based line printer for human-facing Go CLI applications",
   "author": {
     "name": "Sven Greb",
