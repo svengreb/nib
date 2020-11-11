@@ -18,7 +18,7 @@ Before you continue with these contribution guidelines we highly recommend to re
 
 ### Bug Reports
 
-A bug is a _demonstrable problem_ that is caused by the code in the repository. This section guides you through submitting a bug report for tmpl-go. Following these guidelines helps maintainers and the community understand your report, reproduce the behavior and find related reports.
+A bug is a _demonstrable problem_ that is caused by the code in the repository. This section guides you through submitting a bug report for nib. Following these guidelines helps maintainers and the community understand your report, reproduce the behavior and find related reports.
 
 **Do NOT report security vulnerabilities in public issues!** Please only contact one of the core team members or project owner in a responsible manner by [email][gh-mailmap] or via support@svengreb.de. We will assess the issue as soon as possible on a best-effort basis and will give you an estimate for when we have a fix and release available for an eventual public disclosure.
 
