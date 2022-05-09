@@ -7,7 +7,6 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/fatih/color"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/svengreb/nib"
