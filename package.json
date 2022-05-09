@@ -2,11 +2,7 @@
   "name": "@svengreb/nib",
   "version": "0.2.0",
   "description": "A stylish, log-level based line printer for human-facing Go CLI applications",
-  "author": {
-    "name": "Sven Greb",
-    "email": "development@svengreb.de",
-    "url": "https://www.svengreb.de"
-  },
+  "author": "Sven Greb <development@svengreb.de> (https://www.svengreb.de)",
   "homepage": "https://github.com/svengreb/nib",
   "repository": {
     "type": "git",
@@ -15,21 +11,29 @@
   "bugs": {
     "url": "https://github.com/svengreb/nib/issues"
   },
-  "private": true,
   "license": "MIT",
+  "private": true,
+  "engines": {
+    "node": ">=15.13",
+    "npm": ">=7.7"
+  },
   "scripts": {
     "format": "run-s format:pretty",
     "format:pretty": "prettier --write .",
     "lint": "run-s lint:*",
+    "lint:ci": "run-s lint:md lint:ci:*",
+    "lint:ci:pretty": "prettier --loglevel silent --check .",
     "lint:md": "remark --no-stdout . \".github/**/*.md\"",
-    "lint:pretty": "prettier --check ."
+    "lint:pretty": "prettier --check .",
+    "prepare:husky": "husky install",
+    "prepare": "run-s prepare:*"
   },
   "devDependencies": {
-    "husky": "^4.3.0",
-    "lint-staged": "^10.5.1",
+    "@arcticicestudio/remark-preset-lint": ">=0.4.0 <1.0.0",
+    "husky": "^7.0.4",
+    "lint-staged": "^12.0.3",
     "npm-run-all": "^4.1.5",
-    "prettier": "^2.2.1",
-    "remark-cli": "^8.0.1",
-    "remark-preset-lint-arcticicestudio": ">=0.3.0 <1.0.0"
+    "prettier": "^2.4.1",
+    "remark-cli": "^10.0.1"
   }
 }

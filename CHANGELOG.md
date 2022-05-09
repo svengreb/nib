@@ -56,7 +56,7 @@ Therefore the `pencil.NewFrom(*pencil.Options)` has been removed to simply the p
 
 ↠ Bumped outdated Go module dependencies to their latest versions:
 
-- #28 (⊶ 76653193) [`github.com/fatih/color`][github.com/fatih/color] from [1.9.0 to 1.10.0][gh-fatih/color-v1.9.0_v1.10.0] — upgrades the `github.com/mattn/go-colorable` and `github.com/mattn/go-isatty` dependencies which include various bug fixes and improvements.
+- #28 (⊶ 76653193) [`github.com/fatih/color`][gh-fatih/color]] from [1.9.0 to 1.10.0][gh-fatih/color-v1.9.0_v1.10.0] — upgrades the `github.com/mattn/go-colorable` and `github.com/mattn/go-isatty` dependencies which include various bug fixes and improvements.
 
 </details>
 
@@ -132,8 +132,7 @@ In order to make it easier to configure both types, new package specific options
 
 ↠ Before the CI workflow used a matrix strategy to run the `lint-node`, `lint-go` and `test` jobs, but this also included steps that were not necessary for this repository. This has been improved to make the workflow run faster by avoiding unnecessary steps:
 
-- The `lint-node` job has been changed to only run on the [currently latest stable Node version `14.x`]
-  [nodejs/node-cl-v14] only on _Linux_ because this repository is not focused on JavaScript but only runs Node based tools to lint other files within this repository.
+- The `lint-node` job has been changed to only run on the [currently latest stable Node version `14.x`][nodejs/node-cl-v14] only on _Linux_ because this repository is not focused on JavaScript but only runs Node based tools to lint other files within this repository.
 - The `lint-go` job has been changed to only run on the [currently latest stable Go version `1.15.x`][go-doc-rln-1.15] only on _Linux_ because `golangci-lint` doesn't care about the _Go_ version and OS it runs on but only statically checks the source code.
 - The `test` job has been changed to only run on the [currently latest stable Go version `1.15.x`][go-doc-rln-1.15] and only _Linux_ and _Windows_ while _macOS_ is not necessary for this repository because there is no _macOS_ specific code.
 
@@ -195,6 +194,10 @@ otherwise Markdown elements are not parsed and rendered!
 
 <!--lint disable final-definition-->
 
+<!-- Shared -->
+
+[gh-fatih/color]: https://github.com/fatih/color
+
 <!-- Base Links -->
 
 [go-pkg-svengreb/nib/pencil]: https://pkg.go.dev/github.com/svengreb/nib/pencil
@@ -203,7 +206,6 @@ otherwise Markdown elements are not parsed and rendered!
 <!-- v0.1.0 -->
 
 [gh-blob-fatih/color#output]: https://github.com/fatih/color/blob/fccafd9e876be44d0d7b380a3b03aeb661c1e231/color.go#L25
-[gh-fatih/color]: https://github.com/fatih/color
 [gh-tmpl-go-rl-v0.1.0]: https://github.com/svengreb/tmpl-go/releases/tag/v0.1.0
 [gh-tmpl-go-rl-v0.1.1]: https://github.com/svengreb/tmpl-go/releases/tag/v0.1.1
 [gh-tmpl-go-rl-v0.2.0]: https://github.com/svengreb/tmpl-go/releases/tag/v0.2.0
@@ -232,7 +234,6 @@ otherwise Markdown elements are not parsed and rendered!
 [gh-fatih/color-v1.9.0_v1.10.0]: https://github.com/fatih/color/compare/v1.9.0...v1.10.0
 [gh-tmpl-go-rel-v0.4.0]: https://github.com/svengreb/tmpl-go/releases/tag/v0.4.0
 [gh-tmpl-go-rel-v0.5.0]: https://github.com/svengreb/tmpl-go/releases/tag/v0.5.0
-[github.com/fatih/color]: https://github.com/fatih/color
 [go-doc-mod]: https://golang.org/ref/mod
 [go-pkg-if-svengreb/nib#nib]: https://pkg.go.dev/github.com/svengreb/nib#Nib
 [go-pkg-svengreb/nib/inkpen]: https://pkg.go.dev/github.com/svengreb/nib/inkpen
